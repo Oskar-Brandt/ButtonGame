@@ -15,6 +15,10 @@ public class Thingmanagment : MonoBehaviour
     public Button upgradeButton;
     public Button collectorButton;
     public Button collectorUpgradeButton;
+    public Button prestigeButton;
+    public TextMeshProUGUI prestigeText;
+    public TextMeshProUGUI multiplierText;
+    public GameObject prestigePanel;
     private double totalThingsCount;
     private double collectersCount;
     private double collectersProduction;
@@ -23,11 +27,14 @@ public class Thingmanagment : MonoBehaviour
     private double collectorPrice;
     private double collectorUpgradePrice;
     private double collectorProductivity;
+    private double currentMultiplier;
+    private double prestigeMultiplier;
+    private bool prestigePanelHasOpened;
     // Start is called before the first frame update
     void Start()
     {
         totalThings.text = "jajajja";
-        totalThingsCount = 5000;
+        totalThingsCount = 0;
         collectersCount = 0;
         collectersProduction = 0;
         collectorProductivity = 0.5;
@@ -35,6 +42,9 @@ public class Thingmanagment : MonoBehaviour
         upgradePrice = 100;
         collectorUpgradePrice = 500;
         collectorPrice = 10;
+        prestigePanelHasOpened = false;
+        currentMultiplier = 1.00;
+        prestigeMultiplier = 1.00;
         updateAll();
         StartCoroutine(UpdateValueCoroutine());
     }
@@ -46,6 +56,7 @@ public class Thingmanagment : MonoBehaviour
         updateGatherButton();
         updateUpgradeButton();
         updateCollecterButton();
+        updateCollecterUpgradeButton();
     }
 
     private void updateTotalThings()
@@ -80,6 +91,11 @@ public class Thingmanagment : MonoBehaviour
     {
         var cuButtonText = collectorUpgradeButton.GetComponentInChildren<TextMeshProUGUI>();
         cuButtonText.text = $"Double collector productivity (Cost: {collectorUpgradePrice} things)";
+    }
+
+    private void updateMultiplier()
+    {
+        multiplierText.text = $"x{currentMultiplier} -> x{prestigeMultiplier}";
     }
 
     public void upgradeButtonPressed()
@@ -135,6 +151,10 @@ public class Thingmanagment : MonoBehaviour
         }
     }
 
+    public void closePrestigePanel()
+    {
+        prestigePanel.gameObject.SetActive(false);
+    }
 
     public void gatherButtonPressed()
     {
@@ -152,6 +172,21 @@ public class Thingmanagment : MonoBehaviour
             // Update the value
             totalThingsCount += collectersProduction;
             updateTotalThings();
+
+            prestigeMultiplier = 1 + (Math.Floor((totalThingsCount / 50000))/10);
+
+            updateMultiplier();
+            if (totalThingsCount > 50001)
+            {
+                prestigeButton.gameObject.SetActive(true);
+                prestigeText.gameObject.SetActive(true);
+                multiplierText.gameObject.SetActive(true);
+                if (!prestigePanelHasOpened)
+                {
+                    prestigePanel.gameObject.SetActive(true);
+                    prestigePanelHasOpened = true;
+                }
+            }
 
         }
     }
