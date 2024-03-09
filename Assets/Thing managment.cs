@@ -14,21 +14,26 @@ public class Thingmanagment : MonoBehaviour
     public Button gatherButton;
     public Button upgradeButton;
     public Button collectorButton;
+    public Button collectorUpgradeButton;
     private double totalThingsCount;
     private double collectersCount;
     private double collectersProduction;
     private double gatheringPerButtonClick;
     private double upgradePrice;
     private double collectorPrice;
+    private double collectorUpgradePrice;
+    private double collectorProductivity;
     // Start is called before the first frame update
     void Start()
     {
         totalThings.text = "jajajja";
-        totalThingsCount = 0;
+        totalThingsCount = 5000;
         collectersCount = 0;
         collectersProduction = 0;
+        collectorProductivity = 0.5;
         gatheringPerButtonClick = 1;
         upgradePrice = 100;
+        collectorUpgradePrice = 500;
         collectorPrice = 10;
         updateAll();
         StartCoroutine(UpdateValueCoroutine());
@@ -71,6 +76,12 @@ public class Thingmanagment : MonoBehaviour
         cButtonText.text = $"Hire collector\r\n (Cost: {collectorPrice} things)";
     }
 
+    private void updateCollecterUpgradeButton()
+    {
+        var cuButtonText = collectorUpgradeButton.GetComponentInChildren<TextMeshProUGUI>();
+        cuButtonText.text = $"Double collector productivity (Cost: {collectorUpgradePrice} things)";
+    }
+
     public void upgradeButtonPressed()
     {
         if(totalThingsCount >= upgradePrice)
@@ -88,12 +99,31 @@ public class Thingmanagment : MonoBehaviour
         }
     }
 
+    public void collecterUpgradeButtonPressed()
+    {
+        if(totalThingsCount >= collectorUpgradePrice)
+        {
+            collectorProductivity = collectorProductivity * 2;
+            collectorProductivity = Math.Round(collectorProductivity, 2);
+
+            collectersProduction = collectersProduction * 2;
+            updateCollecters();
+
+            totalThingsCount -= collectorUpgradePrice;
+            updateTotalThings();
+
+            collectorUpgradePrice = collectorUpgradePrice * 3;
+            updateCollecterUpgradeButton();
+
+        }
+    }
+
     public void collecterButtonPressed()
     {
         if(totalThingsCount >= collectorPrice)
         {
             collectersCount += 1;
-            collectersProduction += 0.5;
+            collectersProduction += collectorProductivity;
             updateCollecters();
 
             totalThingsCount -= collectorPrice;
