@@ -5,7 +5,7 @@ using UnityEngine.UI; // Import the UI namespace to work with UI elements.
 public class Counter : MonoBehaviour
 {
     public TextMeshProUGUI numberText; // Reference to the TextMeshPro text component.
-    private int count = 0; // Initialize count to 0.
+    private double count = 0; // Initialize count to 0.
      
     public void IncreaseCount()
     {
