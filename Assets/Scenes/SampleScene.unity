@@ -1505,6 +1505,17 @@ MonoBehaviour:
   prestigeText: {fileID: 703704534}
   multiplierText: {fileID: 1798707122}
   prestigePanel: {fileID: 550614792}
+  totalThingsCount: 0
+  collectersCount: 0
+  collectersProduction: 0
+  gatheringPerButtonClick: 0
+  upgradePrice: 0
+  collectorPrice: 0
+  collectorUpgradePrice: 0
+  collectorProductivity: 0
+  currentMultiplier: 0
+  prestigeMultiplier: 0
+  prestigePanelHasOpened: 0
 --- !u!1 &838235814
 GameObject:
   m_ObjectHideFlags: 0
@@ -1721,7 +1732,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1024284100}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 755228348}
+        m_TargetAssemblyTypeName: Thingmanagment, Assembly-CSharp
+        m_MethodName: prestigeButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1024284100
 MonoBehaviour:
   m_ObjectHideFlags: 0

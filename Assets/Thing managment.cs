@@ -19,34 +19,38 @@ public class Thingmanagment : MonoBehaviour
     public TextMeshProUGUI prestigeText;
     public TextMeshProUGUI multiplierText;
     public GameObject prestigePanel;
-    private double totalThingsCount;
-    private double collectersCount;
-    private double collectersProduction;
-    private double gatheringPerButtonClick;
-    private double upgradePrice;
-    private double collectorPrice;
-    private double collectorUpgradePrice;
-    private double collectorProductivity;
-    private double currentMultiplier;
-    private double prestigeMultiplier;
-    private bool prestigePanelHasOpened;
+    [SerializeField] private double totalThingsCount;
+    [SerializeField] private double collectersCount;
+    [SerializeField] private double collectersProduction;
+    [SerializeField] private double gatheringPerButtonClick;
+    [SerializeField] private double upgradePrice;
+    [SerializeField] private double collectorPrice;
+    [SerializeField] private double collectorUpgradePrice;
+    [SerializeField] private double collectorProductivity;
+    [SerializeField] private double currentMultiplier;
+    [SerializeField] private double prestigeMultiplier;
+    [SerializeField] private bool prestigePanelHasOpened;
     // Start is called before the first frame update
     void Start()
     {
-        totalThings.text = "jajajja";
-        totalThingsCount = 0;
-        collectersCount = 0;
-        collectersProduction = 0;
-        collectorProductivity = 0.5;
-        gatheringPerButtonClick = 1;
-        upgradePrice = 100;
-        collectorUpgradePrice = 500;
-        collectorPrice = 10;
         prestigePanelHasOpened = false;
         currentMultiplier = 1.00;
         prestigeMultiplier = 1.00;
+        resetValues();
         updateAll();
         StartCoroutine(UpdateValueCoroutine());
+    }
+
+    void resetValues()
+    {
+        totalThingsCount = 0;
+        collectersCount = 0;
+        collectersProduction = 0;
+        collectorProductivity = 0.5 * currentMultiplier;
+        gatheringPerButtonClick = 1 * currentMultiplier;
+        upgradePrice = 100;
+        collectorUpgradePrice = 500;
+        collectorPrice = 10;
     }
 
     private void updateAll()
@@ -57,6 +61,7 @@ public class Thingmanagment : MonoBehaviour
         updateUpgradeButton();
         updateCollecterButton();
         updateCollecterUpgradeButton();
+        updateMultiplier();
     }
 
     private void updateTotalThings()
@@ -103,7 +108,7 @@ public class Thingmanagment : MonoBehaviour
         if(totalThingsCount >= upgradePrice)
         {
             gatheringPerButtonClick = gatheringPerButtonClick * 2;
-
+            gatheringPerButtonClick = Math.Round(gatheringPerButtonClick, 2);
             updateGatherButton();
 
             totalThingsCount -= upgradePrice;
@@ -111,6 +116,7 @@ public class Thingmanagment : MonoBehaviour
             updateTotalThings();
 
             upgradePrice = upgradePrice * 10;
+            upgradePrice = Math.Round(upgradePrice, 2);
             updateUpgradeButton();
         }
     }
@@ -123,12 +129,15 @@ public class Thingmanagment : MonoBehaviour
             collectorProductivity = Math.Round(collectorProductivity, 2);
 
             collectersProduction = collectersProduction * 2;
+            collectersProduction = Math.Round(collectersProduction, 2);
             updateCollecters();
 
             totalThingsCount -= collectorUpgradePrice;
+            totalThingsCount = Math.Round(totalThingsCount, 2);
             updateTotalThings();
 
             collectorUpgradePrice = collectorUpgradePrice * 3;
+            collectorUpgradePrice = Math.Round(collectorUpgradePrice, 2);
             updateCollecterUpgradeButton();
 
         }
@@ -140,15 +149,24 @@ public class Thingmanagment : MonoBehaviour
         {
             collectersCount += 1;
             collectersProduction += collectorProductivity;
+            collectersProduction = Math.Round(collectersProduction, 2);
             updateCollecters();
 
             totalThingsCount -= collectorPrice;
+            totalThingsCount = Math.Round(totalThingsCount, 2);
             updateTotalThings();
 
             collectorPrice = collectorPrice * 1.2;
             collectorPrice = Math.Round(collectorPrice, 2);
             updateCollecterButton();
         }
+    }
+
+    public void prestigeButtonPressed()
+    {
+        currentMultiplier = prestigeMultiplier;
+        resetValues();
+        updateAll();
     }
 
     public void closePrestigePanel()
@@ -159,6 +177,7 @@ public class Thingmanagment : MonoBehaviour
     public void gatherButtonPressed()
     {
         totalThingsCount += gatheringPerButtonClick;
+        totalThingsCount = Math.Round(totalThingsCount, 2);
         totalThings.text = $"Amount of things: {totalThingsCount}";
     }
 
@@ -171,12 +190,13 @@ public class Thingmanagment : MonoBehaviour
 
             // Update the value
             totalThingsCount += collectersProduction;
+            totalThingsCount = Math.Round(totalThingsCount, 2);
             updateTotalThings();
 
-            prestigeMultiplier = 1 + (Math.Floor((totalThingsCount / 50000))/10);
+            prestigeMultiplier = currentMultiplier + (Math.Floor((totalThingsCount / 10000))/10);
 
             updateMultiplier();
-            if (totalThingsCount > 50001)
+            if (totalThingsCount > 10001)
             {
                 prestigeButton.gameObject.SetActive(true);
                 prestigeText.gameObject.SetActive(true);
